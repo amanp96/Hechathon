@@ -1,0 +1,43 @@
+export const colors = {
+  WHITE: '#FFF',
+  BLACK: '#000',
+  BLUE: 'rgb(43,78,140)',
+  ICON_COLOR: '#a88b58',
+  GRAY_TEXT: '#D9D9D9',
+  GRAY_TEXT_SECONDARY: '#5B5B5B',
+  GRAY_BORDER: 'rgba(23,18,54,0.3)',
+  GRAY_HEADING: 'rgba(23,18,54,0.5)',
+  TEXT_PLACEHOLDER: '#A7A3BB',
+  LIGHT_BACKGROUND: 'rgba(74,77,75,0.5)',
+  BLACK_SECONDARY: '#1E1E1E',
+  RED: '#E32222',
+  HEADING_TEXT: '#4B465C',
+  LIGHT_BACKGROUND_SECONDARY: '#F1F1F1',
+  GRAY_MESSAGE_TEXT: '#9C9797',
+  GREEN: '#1D9F39',
+  MESSAGE_TEXT_COLOR: '#383737',
+  RECIVER_MESSAGE_BACKGROUND_COLOR: '#EBFBF1',
+  SENDER_MESSAGE_BACKGROUND_COLOR: '#EBEDFB',
+};
+export const getColor = (name: string, colorType: string) => {
+  const colors: {[key: string]: string} = {
+    Accepted: colorType ? `#1D4F9129` : `#1D4F91`,
+    Submitted: colorType ? `#A8AAAE29` : `#A8AAAE`,
+    Rejected: colorType ? `#EA545529` : `#EA5455`,
+    'Will Info Sent': colorType ? `#FF9F4329` : `#FF9F43`,
+    'Will Info Approved': colorType ? `#FF9F4329` : `#FF9F43`,
+    'Will Info Ch. Req': colorType ? `#FF9F4329` : `#FF9F43`,
+    'Change Requested': colorType ? `#FF9F4329` : `#FF9F43`,
+    'Payment Pending': colorType ? `#911D8C29` : `#911D8C`,
+    'Payment Done': colorType ? `#911D8C29` : `#911D8C`,
+    'Will Draft Submitted': colorType ? `#7367F029` : `#7367F0`,
+    'Will Draft Approved': colorType ? `#7367F029` : `#7367F0`,
+    'Will Draft Ch. Req': colorType ? `#7367F029` : `#7367F0`,
+    'Will in Progress': colorType ? `#00CFE829` : `#00CFE8`,
+    Completed: colorType ? `#28C76F29` : `#28C76F`,
+    Upcoming: colorType ? `#CDBEFC` : `#000000`,
+    Approved: colorType ? `rgba(40, 199, 111, 0.15)` : `#28C76F`,
+    Cancelled: colorType ? `rgba(234, 84, 85, 0.16)` : `#EA5455`,
+  };
+  return colors[name];
+};
