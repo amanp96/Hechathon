@@ -5,9 +5,9 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useEffect} from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,7 +16,8 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
+import messaging from '@react-native-firebase/messaging';
+import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 import {
   Colors,
   DebugInstructions,
@@ -24,75 +25,99 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import notifee from '@notifee/react-native';
+import {Provider} from 'react-redux';
+import {store} from './src/store/Store';
+import AppNavigatior from './src/routes/AppNavigation';
+import {fetchContent} from './src/store/slice/contentSlice';
+import {constants} from './src/theme/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+function App() {
+  useEffect(() => {
+    registerForRemoteMessages();
+  }, []);
+  async function onMessageReceived(message: any) {
+    const {title, body, ...otherNotificationFields} = message.notification;
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    // Display the notification using notifee
+    await notifee.displayNotification({
+      title,
+      body,
+      android: {
+        channelId: channelId, // Specify your Android channel ID
+        // Other Android-specific options can be included here
+        ...otherNotificationFields.android,
+      },
+    });
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+    console.log('Message handled in the background!', message);
+  }
+  async function getFCMToken() {
+    try {
+      const token = await messaging().getToken();
+      console.log('FCM Token:', token);
+      await AsyncStorage.setItem(constants.FCM_TOKEN, token);
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+      return token;
+    } catch (error) {
+      console.error('Error getting FCM token:', error);
+      return null;
+    }
+  }
+  const requestNotificationPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
+  const checkNotificationPermission = async () => {
+    const result = await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
   };
 
+  const requestPermission = async () => {
+    const checkPermission = await checkNotificationPermission();
+    if (checkPermission !== RESULTS.GRANTED) {
+      const request = await requestNotificationPermission();
+      if (request !== RESULTS.GRANTED) {
+      } else {
+        getFCMToken();
+      }
+    }
+  };
+  useEffect(() => {
+    {
+      Platform.OS === 'android' && requestPermission();
+    }
+    // Register the onMessage listener
+    const unsubscribeOnMessage = messaging().onMessage(
+      async (remoteMessage: any) => {
+        // Display a local notification
+        onMessageReceived(remoteMessage);
+      },
+    );
+
+    return () => unsubscribeOnMessage();
+  }, []);
+
+  async function registerForRemoteMessages() {
+    try {
+      await messaging().registerDeviceForRemoteMessages();
+      console.log('Registered for remote messages');
+      return true;
+    } catch (error) {
+      console.error('Error registering for remote messages:', error);
+      return false;
+    }
+  }
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Provider store={store}>
+      <View style={{flex: 1}}>
+        <AppNavigatior />
+      </View>
+    </Provider>
   );
 }
 

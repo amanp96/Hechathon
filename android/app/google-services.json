@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "843775814221",
+    "project_id": "myntraapp-ab907",
+    "storage_bucket": "myntraapp-ab907.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843775814221:android:fd1698441c67c0b0430a04",
+        "android_client_info": {
+          "package_name": "com.hecathonapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAOujxwZn27qCRXpT1Msdk62vLLy4hc30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
