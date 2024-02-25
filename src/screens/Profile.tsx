@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   TouchableOpacity,
   Image,
-  StyleSheet,
   Platform,
 } from 'react-native';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
+
 import {
   CameraOptions,
   ImageLibraryOptions,
@@ -15,9 +16,15 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 
-const PersonalInfo = () => {
+const Profile = () => {
   const [profileImage, setProfileImage] = useState<any>(null);
-
+  const candidate = {
+    name: 'John Doe',
+    age: 30,
+    skills: ['React Native', 'JavaScript', 'UI/UX Design'],
+    experience: '5 years',
+    // Add other relevant information
+  };
   const changeProfileIcon = async () => {
     const options: ImageLibraryOptions = {
       mediaType: 'photo',
@@ -28,11 +35,8 @@ const PersonalInfo = () => {
     setProfileImage(Platform.OS === 'android' ? `${uri}` : uri!);
     // setPicture(Platform.OS === 'android' ? `file://${uri}` : uri!);
   };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Personal Info</Text>
-
       {profileImage ? (
         <TouchableOpacity
           onPress={changeProfileIcon}
@@ -49,15 +53,23 @@ const PersonalInfo = () => {
           <Text style={styles.addImageText}>Add Profile Image</Text>
         </View>
       )}
+      <Text style={styles.name}>{candidate.name}</Text>
+      <Text style={styles.info}>Age: {candidate.age}</Text>
+      <Text style={styles.info}>Skills: {candidate.skills.join(', ')}</Text>
+      <Text style={styles.info}>Experience: {candidate.experience}</Text>
+      {/* Add other components to display additional information */}
     </View>
   );
 };
 
+export default Profile;
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: '6%',
-    paddingVertical: '3%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+
   title: {
     color: '#171830',
     fontSize: 26,
@@ -90,6 +102,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: '5%',
     color: '#636363',
   },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  info: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
 });
-
-export default PersonalInfo;

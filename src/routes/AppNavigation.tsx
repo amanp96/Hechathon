@@ -1,21 +1,15 @@
-import {View, Text, Platform} from 'react-native';
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Home from '../screens/Home';
+import AppDrawer from './AppDrawer';
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigatior = () => {
+const AppNavigation = () => {
   return (
-    <NavigationContainer>
-      <View style={{flex: 1}}>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Navigator>
-      </View>
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Drawer" component={AppDrawer} />
+    </Stack.Navigator>
   );
 };
 
-export default AppNavigatior;
+export default AppNavigation;
